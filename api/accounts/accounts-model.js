@@ -21,14 +21,15 @@ const create = account => {
 
 const updateById = (id, account) => {
   // DO YOUR MAGIC
-  return getById(id)
-    .update(account)
-    .then(() => getById(id))
+  return db("accounts")
+    .where({ id })
+    .update({ ...account, id })
+    .then(count => count ? getById(id) : null)
 }
 
 const deleteById = id => {
   // DO YOUR MAGIC
-  getById(id).del()
+  return getById(id).del()
 }
 
 module.exports = {
