@@ -23,7 +23,7 @@ const updateById = (id, account) => {
   // DO YOUR MAGIC
   return db("accounts")
     .where({ id })
-    .update({ ...account, id })
+    .update(account)
     .then(count => count ? getById(id) : null)
 }
 
