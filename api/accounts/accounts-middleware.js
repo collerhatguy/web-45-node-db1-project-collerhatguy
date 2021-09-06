@@ -1,4 +1,4 @@
-const { getById, getAll } = require("./accounts-model")
+const { getById, checkName } = require("./accounts-model")
 
 
 exports.checkAccountPayload = (req, res, next) => {
@@ -7,8 +7,10 @@ exports.checkAccountPayload = (req, res, next) => {
   if (!name || (!budget && typeof budget === "undefined")) next({ status: 400, message: "name and budget are required" })
   if (typeof budget !== "number") next({ status: 400, message: "budget of account must be a number" })
   if (typeof name !== "string") next({ status: 400, message: "name of account must be a string" })
+
   const trimmedName = name.trim()
   const trueLength = trimmedName.length
+
   if (trueLength < 3 || trueLength > 100) next({ status: 400, message: "name of account must be between 3 and 100" })
   if (budget < 0 || budget > 1000000) next({ status: 400, message: "budget of account is too large or too small" })
   req.accountPayload = { name: trimmedName, budget: budget }
@@ -17,10 +19,8 @@ exports.checkAccountPayload = (req, res, next) => {
 
 exports.checkAccountNameUnique = (req, res, next) => {
   // DO YOUR MAGIC
-  getAll().then(accounts => {
-    if (accounts.some(account => 
-      account.name === req.body.name.trim()
-    )) next({ status: 400, message: "that name is taken" })
+  checkName(req.accountPayload.name).then(length => {
+    if (length) next({ status: 400, message: "that name is taken" })
     next()
   })
 }

@@ -32,10 +32,18 @@ const deleteById = id => {
   return getById(id).del()
 }
 
+const checkName = name => {
+  return getAll()
+    .where({ name })
+    .then(accounts => accounts.length)
+
+}
+
 module.exports = {
   getAll,
   getById,
   create,
   updateById,
   deleteById,
+  checkName
 }
